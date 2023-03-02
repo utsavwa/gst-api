@@ -1,0 +1,870 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is an api for GSTIN.",
+        "version": "1.0.0",
+        "title": "GSTIN API",
+        "contact": {
+            "email": "info.gstin@gmail.com"
+        }
+    },
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "authorization",
+            "in": "header"
+        }
+    },
+    "host": "wa-gst-api.onrender.com",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for users"
+        },
+        {
+            "name": "GSTIN",
+            "description": "API for gstin"
+        },
+        {
+            "name": "Review",
+            "description": "API for write review and rating"
+        }
+    ],
+    "paths": {
+        "/users/signup": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User signup",
+                "description": "User signup",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "user signup credential",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "gstin": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "passwordConfirm": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful creation",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User login",
+                "description": "User login",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "user login credential",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "gstin": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized user",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gst/verify": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "GSTIN"
+                ],
+                "summary": "Verify GST number whether it is valid or not",
+                "description": "Verify GST number whether it is valid or not",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "gstin": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/VerifiedGST"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gst/recordGst": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "GSTIN"
+                ],
+                "summary": "Add GST record",
+                "description": "Add GST record",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "gstin": {
+                                    "type": "string"
+                                },
+                                "gstData": {
+                                    "$ref": "#/definitions/VerifiedGST"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/VerifiedGST"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gst/searchGst/{gstin}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "GSTIN"
+                ],
+                "summary": "Search gst",
+                "description": "Search gst",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "gstin",
+                        "type": "string",
+                        "description": "gst number you want to search!",
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "type": "number",
+                        "description": "Number of data want to get per page"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "number",
+                        "description": "Page number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/VerifiedGST"
+                                    }
+                                },
+                                "total_page": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gst": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "GSTIN"
+                ],
+                "summary": "Fetch all GST record",
+                "description": "Fetch all GST record",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "type": "number",
+                        "description": "Number of data want to get per page"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "number",
+                        "description": "Page number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "gst": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/VerifiedGST"
+                                    }
+                                },
+                                "total_page": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gst/{gstin}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "GSTIN"
+                ],
+                "summary": "Fetch GST record by id",
+                "description": "Fetch GST record by id",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "gstin",
+                        "type": "string",
+                        "description": "gst number you want to search!",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/VerifiedGST"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/review/write": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Add review on gst",
+                "description": "Add review on gst",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "string"
+                                },
+                                "gstId": {
+                                    "type": "string"
+                                },
+                                "reviewText": {
+                                    "type": "string"
+                                },
+                                "rating": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/WrittenReview"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/review/{gstId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Fetch review of particular gst",
+                "description": "Fetch review of particular gst",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "gstId",
+                        "type": "string",
+                        "description": "gst id you want to fetch review!",
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "type": "number",
+                        "description": "Number of data want to get per page"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "number",
+                        "description": "Page number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/FetchedReview"
+                                    }
+                                },
+                                "total_page": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Token validation fail",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "gstin": {
+                            "type": "string"
+                        },
+                        "_id": {
+                            "type": "string"
+                        },
+                        "createdAt": {
+                            "type": "string"
+                        },
+                        "updatedAt": {
+                            "type": "string"
+                        },
+                        "__v": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "InvalidResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "VerifiedGST": {
+            "type": "object",
+            "properties": {
+                "stjCd": {
+                    "type": "string"
+                },
+                "dty": {
+                    "type": "string"
+                },
+                "stj": {
+                    "type": "string"
+                },
+                "lgnm": {
+                    "type": "string"
+                },
+                "adadr": {
+                    "type": "array"
+                },
+                "cxdt": {
+                    "type": "string"
+                },
+                "gstin": {
+                    "type": "string"
+                },
+                "nba": {
+                    "type": "array"
+                },
+                "lstupdt": {
+                    "type": "string"
+                },
+                "ctb": {
+                    "type": "string"
+                },
+                "rgdt": {
+                    "type": "string"
+                },
+                "pradr": {
+                    "type": "object",
+                    "properties": {
+                        "addr": {
+                            "type": "object",
+                            "properties": {
+                                "bnm": {
+                                    "type": "string"
+                                },
+                                "st": {
+                                    "type": "string"
+                                },
+                                "loc": {
+                                    "type": "string"
+                                },
+                                "bno": {
+                                    "type": "string"
+                                },
+                                "dst": {
+                                    "type": "string"
+                                },
+                                "stcd": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                },
+                                "flno": {
+                                    "type": "string"
+                                },
+                                "lt": {
+                                    "type": "string"
+                                },
+                                "pncd": {
+                                    "type": "string"
+                                },
+                                "lg": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "ntr": {
+                        "type": "string"
+                    }
+                },
+                "ctjCd": {
+                    "type": "string"
+                },
+                "sts": {
+                    "type": "string"
+                },
+                "tradeNam": {
+                    "type": "string"
+                },
+                "ctj": {
+                    "type": "string"
+                },
+                "einvoiceStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "WrittenReview": {
+            "type": "object",
+            "properties": {
+                "userId": {
+                    "type": "string"
+                },
+                "gstId": {
+                    "type": "string"
+                },
+                "reviewText": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "_id": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "__v": {
+                    "type": "number"
+                }
+            }
+        },
+        "FetchedReview": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "object",
+                    "properties": {
+                        "_id": {
+                            "type": "string"
+                        },
+                        "gstin": {
+                            "type": "string"
+                        },
+                        "createdAt": {
+                            "type": "string"
+                        },
+                        "updatedAt": {
+                            "type": "string"
+                        },
+                        "__v": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "gstId": {
+                    "type": "string"
+                },
+                "reviewText": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "__v": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}
